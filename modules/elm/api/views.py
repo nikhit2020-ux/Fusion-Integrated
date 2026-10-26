@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Leave
+from modules.elm.models import LeaveApplication  # Corrected import to LeaveApplication
 from .serializers import LeaveSerializer
 
 class LeaveListCreateAPIView(generics.ListCreateAPIView):
@@ -16,4 +16,4 @@ class LeaveDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LeaveSerializer
 
     def get_queryset(self):
-        return Leave.objects.filter(creator=self.request.user)
+        return LeaveApplication.objects.filter(creator=self.request.user)  # Corrected queryset method to filter by creator

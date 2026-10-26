@@ -1,7 +1,19 @@
-from rest_framework import serializers
-from .models import Leave
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .models import LeaveApplication  # Corrected import to LeaveApplication
+from .serializers import LeaveSerializer
 
-class LeaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Leave
-        fields = '__all__'
+class LeaveListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LeaveSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+class LeaveDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LeaveSerializer
+
+    def get_queryset(self):
+        return LeaveApplication.objects.filter(creator=self.request.user)  # Corrected queryset method to filter by creator
