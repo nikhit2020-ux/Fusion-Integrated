@@ -1,4 +1,5 @@
 from django.apps import AppConfig
 
 class ElmConfig(AppConfig):
-    name = 'elm'
+    name = 'modules.elm'
+    label = 'elm'
