@@ -1,13 +1,13 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
-import ApplyLeave from './pages/ApplyLeave';
-import MyLeaves from './pages/MyLeaves';
-import ApproveLeaves from './pages/ApproveLeaves';
+import { lazy } from "react";
+import { Navigate, type RouteObject } from "react-router-dom";
 
-const routes = [
-  <Route path="/elm/apply" element={<ApplyLeave />} />,
-  <Route path="/elm/my-leaves" element={<MyLeaves />} />,
-  <Route path="/elm/approve-leaves" element={<ApproveLeaves />} />,
+const ApplyLeave = lazy(() => import("./pages/ApplyLeave"));
+const MyLeaves = lazy(() => import("./pages/MyLeaves"));
+const ApproveLeaves = lazy(() => import("./pages/ApproveLeaves"));
+
+export const routes: RouteObject[] = [
+  { index: true, element: <Navigate to="my-leaves" replace /> },
+  { path: "apply", element: <ApplyLeave /> },
+  { path: "my-leaves", element: <MyLeaves /> },
+  { path: "approve-leaves", element: <ApproveLeaves /> },
 ];
-
-export default routes;
