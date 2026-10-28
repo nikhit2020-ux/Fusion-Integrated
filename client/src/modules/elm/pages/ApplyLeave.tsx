@@ -1,69 +1,41 @@
-import React, { useState } from 'react';
+import { useState, type FormEvent } from "react";
+import { http, errorMessage } from "../../../lib/http";
 
-const ApplyLeave = () => {
-  const [leaveData, setLeaveData] = useState({
-    leaveType: '',
-    startDate: '',
-    endDate: '',
-    reason: '',
-  });
+export default function ApplyLeave() {
+  const [form, setForm] = useState({ leave_type: "", start_date: "", end_date: "", comments: "" });
+  const [msg, setMsg] = useState("");
 
-  const handleInputChange = (e) => {
-    setLeaveData({
-      ...leaveData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const set = (k: string, v: string) => setForm({ ...form, [k]: v });
 
-  const handleSubmit = async (e) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    // Send leaveData to backend using fetch or axios
+    setMsg("");
+    try {
+      await http.post("/elm/leaves/", { ...form, leave_type: Number(form.leave_type) });
+      setMsg("Leave applied successfully.");
+      setForm({ leave_type: "", start_date: "", end_date: "", comments: "" });
+    } catch (err) {
+      setMsg("Error: " + errorMessage(err));
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="leaveType">Leave Type:</label>
-        <input
-          type="text"
-          id="leaveType"
-          name="leaveType"
-          value={leaveData.leaveType}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="startDate">Start Date:</label>
-        <input
-          type="date"
-          id="startDate"
-          name="startDate"
-          value={leaveData.startDate}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="endDate">End Date:</label>
-        <input
-          type="date"
-          id="endDate"
-          name="endDate"
-          value={leaveData.endDate}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="reason">Reason:</label>
-        <textarea
-          id="reason"
-          name="reason"
-          value={leaveData.reason}
-          onChange={handleInputChange}
-        />
-      </div>
-      <button type="submit">Apply for Leave</button>
+    <form onSubmit={submit} style={{ display: "grid", gap: 12, maxWidth: 400 }}>
+      <h1>Apply for Leave</h1>
+      <label>Leave type ID
+        <input required type="number" value={form.leave_type} onChange={e => set("leave_type", e.target.value)} />
+      </label>
+      <label>Start date
+        <input required type="date" value={form.start_date} onChange={e => set("start_date", e.target.value)} />
+      </label>
+      <label>End date
+        <input required type="date" value={form.end_date} onChange={e => set("end_date", e.target.value)} />
+      </label>
+      <label>Reason
+        <textarea value={form.comments} onChange={e => set("comments", e.target.value)} />
+      </label>
+      <button type="submit">Apply</button>
+      {msg && <p>{msg}</p>}
     </form>
   );
-};
-
-export default ApplyLeave;
+}
