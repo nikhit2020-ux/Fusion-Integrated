@@ -37,16 +37,24 @@ class LeaveApplication(models.Model):
     """
     Model representing Leave Applications
     """
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    applicant_id = models.IntegerField()  # Fusion IAM user_id of the employee
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('cancelled', 'Cancelled')])
-    approver = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='approver_set')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    approver_id = models.IntegerField(null=True, blank=True)  # IAM user_id of who decided
     comments = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.employee} - {self.leave_type} - {self.status}"
+        return f"{self.applicant_id} - {self.leave_type} - {self.status}"
 
     class Meta:
         verbose_name_plural = 'Leave Applications'

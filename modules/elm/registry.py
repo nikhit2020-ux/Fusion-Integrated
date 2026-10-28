@@ -19,8 +19,8 @@ PERMISSIONS = [
 ]
 
 ROLE_GRANTS = {
-    "Employee": ["elm.leave.apply", "elm.leave.view_self"],
-    "Leave Approver": ["elm.leave.view_self", "elm.leave.cancel", "elm.leave.view_pending", "elm.leave.approve"],
+    "Employee": ["elm.leave.apply", "elm.leave.view_self", "elm.leave.cancel"],
+    "Leave Approver": ["elm.leave.view_pending", "elm.leave.approve"],
 }
 
 NAV_ITEMS = [
