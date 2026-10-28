@@ -1,41 +1,36 @@
-from django.contrib.auth.models import Permission
+"""What the server tells the shell about this module (ADR-0010).
 
-class LeaveELMPermissions:
-    """
-    Registry for Leave ELM Permissions
-    """
-    ROLES = {
-        'Employee': 'can_view_leave_applications',
-        'Leave Approver': 'can_approve_leave_applications',
-    }
+Nav items carry `required_permission` and the server filters before sending —
+the client does zero filtering, so a link a role cannot use never reaches the
+browser at all.
+"""
+MODULE = {
+    "code": "elm", "label": "Leave Management", "icon": "CalendarBlank",
+    "base_path": "/elm", "nav_section": "Leave", "sort_order": 20,
+    "status": "active",
+}
 
-    @classmethod
-    def get_permissions(cls, role):
-        """
-        Get permissions for a given role
-        """
-        return cls.ROLES.get(role, None)
+PERMISSIONS = [
+    ("elm.leave.apply", "Apply for Leave"),
+    ("elm.leave.view_self", "View Own Leave Applications"),
+    ("elm.leave.cancel", "Cancel Leave Application"),
+    ("elm.leave.view_pending", "View Pending Leave Applications"),
+    ("elm.leave.approve", "Approve Leave Applications"),
+]
 
-class LeaveELMNavigationItems:
-    """
-    Registry for Leave ELM Navigation Items
-    """
-    NAV_ITEMS = {
-        'leave_applications': {
-            'name': 'Leave Applications',
-            'path': '/leave-applications/',
-            'permissions': ['can_view_leave_applications'],
-        },
-        'create_leave_application': {
-            'name': 'Create Leave Application',
-            'path': '/leave-applications/create/',
-            'permissions': ['can_approve_leave_applications'],
-        },
-    }
+ROLE_GRANTS = {
+    "Employee": ["elm.leave.apply", "elm.leave.view_self"],
+    "Leave Approver": ["elm.leave.view_self", "elm.leave.cancel", "elm.leave.view_pending", "elm.leave.approve"],
+}
 
-    @classmethod
-    def get_nav_items(cls):
-        """
-        Get navigation items
-        """
-        return cls.NAV_ITEMS
+NAV_ITEMS = [
+    {"code": "elm.apply", "label": "Apply for Leave",
+     "icon": "CalendarBlank", "to": "/elm/apply",
+     "required_permission": "elm.leave.apply"},
+    {"code": "elm.my-leaves", "label": "My Leaves",
+     "icon": "User", "to": "/elm/my-leaves",
+     "required_permission": "elm.leave.view_self"},
+    {"code": "elm.approve-leaves", "label": "Approve Leave Applications",
+     "icon": "Check", "to": "/elm/approve-leaves",
+     "required_permission": "elm.leave.approve"},
+]
