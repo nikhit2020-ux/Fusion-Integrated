@@ -1,0 +1,98 @@
+===== test_fr_009_rspc_logs_submission_and_review_actions run 1 2026-11-10 20:11:24 UTC =====
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr_009_rspc_logs_submission_and_review_actions ______________
+
+api = <function api.<locals>.as_user at 0x7554909945e0>
+
+    def test_fr_009_rspc_logs_submission_and_review_actions(api):
+        """FR-009 | RSPC-CFR-002; RSPC-FR-088
+    
+        The proposal's decision records are the only RSPC log; they are read back
+        by the authorized owner."""
+        pid = submit_id(api)
+        ok(recommend(api, pid, remarks="ok"))
+        log = mine(api, F1)[pid]["decisions"]
+        assert all(e["decided_at"] for e in log)
+        logged_actors = {e["actor_id"] for e in log}
+>       assert F1 in logged_actors, "no log entry for the submission action"
+E       AssertionError: no log entry for the submission action
+E       assert 2001 in {3001}
+
+tests/a8/fr/test_fr.py:235: AssertionError
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr.py::test_fr_009_rspc_logs_submission_and_review_actions
+1 failed in 6.50s
+exit=1
+===== test_fr_009_rspc_logs_submission_and_review_actions run 2 2026-11-10 20:11:34 UTC =====
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr_009_rspc_logs_submission_and_review_actions ______________
+
+api = <function api.<locals>.as_user at 0x7306389a0540>
+
+    def test_fr_009_rspc_logs_submission_and_review_actions(api):
+        """FR-009 | RSPC-CFR-002; RSPC-FR-088
+    
+        The proposal's decision records are the only RSPC log; they are read back
+        by the authorized owner."""
+        pid = submit_id(api)
+        ok(recommend(api, pid, remarks="ok"))
+        log = mine(api, F1)[pid]["decisions"]
+        assert all(e["decided_at"] for e in log)
+        logged_actors = {e["actor_id"] for e in log}
+>       assert F1 in logged_actors, "no log entry for the submission action"
+E       AssertionError: no log entry for the submission action
+E       assert 2001 in {3001}
+
+tests/a8/fr/test_fr.py:235: AssertionError
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr.py::test_fr_009_rspc_logs_submission_and_review_actions
+1 failed in 4.86s
+exit=1
+===== test_fr_023_dean_cannot_finally_approve_beyond_limit run 1 2026-11-10 20:11:40 UTC =====
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr_023_dean_cannot_finally_approve_beyond_limit _____________
+
+api = <function api.<locals>.as_user at 0x70b85f45fba0>
+
+    def test_fr_023_dean_cannot_finally_approve_beyond_limit(api):
+        """FR-023 | RSPC-CFR-004; RSPC-FR-126
+    
+        No limit value is defined anywhere, so the largest budget the system can
+        hold is used as the over-limit proposal."""
+        pid = to_dean_stage(api, budget=MAX_BUDGET)
+        decide(api, pid, "approve", "Attempted final approval")
+>       assert status_of(pid) != "approved"
+E       AssertionError: assert 'approved' != 'approved'
+E        +  where 'approved' = status_of(1)
+
+tests/a8/fr/test_fr.py:346: AssertionError
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr.py::test_fr_023_dean_cannot_finally_approve_beyond_limit
+1 failed in 6.94s
+exit=1
+===== test_fr_023_dean_cannot_finally_approve_beyond_limit run 2 2026-11-10 20:11:46 UTC =====
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_fr_023_dean_cannot_finally_approve_beyond_limit _____________
+
+api = <function api.<locals>.as_user at 0x7b055c5b7f60>
+
+    def test_fr_023_dean_cannot_finally_approve_beyond_limit(api):
+        """FR-023 | RSPC-CFR-004; RSPC-FR-126
+    
+        No limit value is defined anywhere, so the largest budget the system can
+        hold is used as the over-limit proposal."""
+        pid = to_dean_stage(api, budget=MAX_BUDGET)
+        decide(api, pid, "approve", "Attempted final approval")
+>       assert status_of(pid) != "approved"
+E       AssertionError: assert 'approved' != 'approved'
+E        +  where 'approved' = status_of(1)
+
+tests/a8/fr/test_fr.py:346: AssertionError
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr.py::test_fr_023_dean_cannot_finally_approve_beyond_limit
+1 failed in 5.74s
+exit=1

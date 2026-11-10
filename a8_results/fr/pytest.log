@@ -1,0 +1,64 @@
+.....s.sF..s..s.sssss.F..s........ssssssssssssssssssssssssssssssssssssss [ 64%]
+ssssssssssssssssss......ssssss.sssss...                                  [100%]
+=================================== FAILURES ===================================
+_____________ test_fr_009_rspc_logs_submission_and_review_actions ______________
+
+api = <function api.<locals>.as_user at 0x75f29ba885e0>
+
+    def test_fr_009_rspc_logs_submission_and_review_actions(api):
+        """FR-009 | RSPC-CFR-002; RSPC-FR-088
+    
+        The proposal's decision records are the only RSPC log; they are read back
+        by the authorized owner."""
+        pid = submit_id(api)
+        ok(recommend(api, pid, remarks="ok"))
+        log = mine(api, F1)[pid]["decisions"]
+        assert all(e["decided_at"] for e in log)
+        logged_actors = {e["actor_id"] for e in log}
+>       assert F1 in logged_actors, "no log entry for the submission action"
+E       AssertionError: no log entry for the submission action
+E       assert 2001 in {3001}
+
+tests/a8/fr/test_fr.py:235: AssertionError
+_____________ test_fr_023_dean_cannot_finally_approve_beyond_limit _____________
+
+api = <function api.<locals>.as_user at 0x75f29bafeb60>
+
+    def test_fr_023_dean_cannot_finally_approve_beyond_limit(api):
+        """FR-023 | RSPC-CFR-004; RSPC-FR-126
+    
+        No limit value is defined anywhere, so the largest budget the system can
+        hold is used as the over-limit proposal."""
+        pid = to_dean_stage(api, budget=MAX_BUDGET)
+        decide(api, pid, "approve", "Attempted final approval")
+>       assert status_of(pid) != "approved"
+E       AssertionError: assert 'approved' != 'approved'
+E        +  where 'approved' = status_of(15)
+
+tests/a8/fr/test_fr.py:346: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                                                                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------------------------------------------
+modules/rspc/__init__.py                                                         0      0      0      0   100%
+modules/rspc/api/__init__.py                                                     0      0      0      0   100%
+modules/rspc/api/serializers.py                                                 26      1      4      1    93%   65
+modules/rspc/api/urls.py                                                         3      0      0      0   100%
+modules/rspc/api/views.py                                                      131     19     36      9    81%   50, 67, 72, 104, 141, 168-180, 204, 220-236
+modules/rspc/apps.py                                                             4      0      0      0   100%
+modules/rspc/migrations/0001_initial.py                                          6      0      0      0   100%
+modules/rspc/migrations/0002_alter_researchproposal_department_and_more.py       4      0      0      0   100%
+modules/rspc/migrations/__init__.py                                              0      0      0      0   100%
+modules/rspc/models.py                                                          31      2      0      0    94%   37, 56
+modules/rspc/registry.py                                                         4      0      0      0   100%
+modules/rspc/tests/__init__.py                                                   0      0      0      0   100%
+modules/rspc/tests/test_proposal_flow.py                                        52     52      0      0     0%   1-85
+modules/rspc/tests/test_proposal_validation.py                                  19     19      0      0     0%   1-24
+------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                          280     93     40     10    67%
+Coverage XML written to file a8_results/fr/coverage.xml
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr.py::test_fr_009_rspc_logs_submission_and_review_actions
+FAILED tests/a8/fr/test_fr.py::test_fr_023_dean_cannot_finally_approve_beyond_limit
+2 failed, 32 passed, 77 skipped in 10.85s
