@@ -1,0 +1,24 @@
+......ssssssssssssssssssssssssssss                                       [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                                                                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------------------------------------------
+modules/rspc/__init__.py                                                         0      0      0      0   100%
+modules/rspc/api/__init__.py                                                     0      0      0      0   100%
+modules/rspc/api/serializers.py                                                 26      2      4      2    87%   65, 68
+modules/rspc/api/urls.py                                                         3      0      0      0   100%
+modules/rspc/api/views.py                                                      131     19     36     14    79%   25, 32-34, 42, 44, 47-50, 67, 72, 104, 109, 141, 180-184, 204, 232-236
+modules/rspc/apps.py                                                             4      0      0      0   100%
+modules/rspc/migrations/0001_initial.py                                          6      0      0      0   100%
+modules/rspc/migrations/0002_alter_researchproposal_department_and_more.py       4      0      0      0   100%
+modules/rspc/migrations/__init__.py                                              0      0      0      0   100%
+modules/rspc/models.py                                                          31      2      0      0    94%   37, 56
+modules/rspc/registry.py                                                         4      0      0      0   100%
+modules/rspc/tests/__init__.py                                                   0      0      0      0   100%
+modules/rspc/tests/test_proposal_flow.py                                        52     52      0      0     0%   1-85
+modules/rspc/tests/test_proposal_validation.py                                  19     19      0      0     0%   1-24
+------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                          280     94     40     16    65%
+Coverage XML written to file a8_results/wf/coverage.xml
+6 passed, 28 skipped in 9.42s

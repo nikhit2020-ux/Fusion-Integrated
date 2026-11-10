@@ -1,0 +1,4 @@
+File: a8_design/WF_DESIGN.json
+SHA-256: f1431321de85478027244a1e9ee3c09a2e481d71e03acc52614a1695e4bbd0f6
+Test cases: 34 (WF-001..WF-034)
+Frozen at: 2026-11-10 21:20:05 UTC

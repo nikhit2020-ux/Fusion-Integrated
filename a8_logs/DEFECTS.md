@@ -12,3 +12,8 @@ One row per underlying problem. "Exposed by" lists the strategies whose tests re
 | Ref | Summary | Classification | Spec evidence | Raised by (test_ids) |
 |---|---|---|---|---|
 | C-01 | Dean-RSPC can finally approve a proposal of any budget; no Dean approval limit is applied. The spec requires approval "within delegated or defined limits" but defines no limit. | Specification ambiguity | RSPC-FR-126; RSPC-CFR-004 | FR (FR-023) |
+
+## WF strategy (added in WF Step F)
+
+WF (34 tests: 6 passed, 0 failed, 28 NOT_AUTOMATED) produced no failed or errored tests, so it exposed no new defect and does not add itself to D-01, D-02 or C-01.
+The WF tests cover only the research-proposal state transitions (CW-RSPC-01). Those transitions do not exercise submission audit logging (D-01), draft save/revise (D-02) or a Dean approval limit (C-01).

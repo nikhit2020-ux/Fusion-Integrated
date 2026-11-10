@@ -1,0 +1,308 @@
+[
+  {
+    "test_id": "WF-001",
+    "source_id": "BW-RSPC-01 full path; CW-RSPC-01 rows 1, 2, 4, 6 (Dean-final approval path)",
+    "purpose": "Verify the research proposal success path that ends with Dean-RSPC approval without Director action.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin and Dean-RSPC roles. Faculty has a research proposal in Proposal Draft with all mandatory fields (objectives, timeline, budget, funding source, resource requirements) filled. The proposal does not meet any condition requiring Director action.",
+    "action_or_input": "1) Faculty submits the proposal. 2) HoD records a recommended outcome. 3) RSPC Admin records an eligible (complete/compliant) verification outcome. 4) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Proposal Submitted; 2) Department Recommended; 3) Admin Verified; 4) Approved. The proposal never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-002",
+    "source_id": "BW-RSPC-02 full path; CW-RSPC-01 rows 1, 2, 4, 7, 9 (Director-routed approval path)",
+    "purpose": "Verify the research proposal success path where Dean-RSPC forwards to the Director and the Director approves.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin, Dean-RSPC and Director roles. Faculty has a research proposal in Proposal Draft with all mandatory fields filled. The proposal meets the represented condition requiring Director action (e.g. high-value/significant request).",
+    "action_or_input": "1) Faculty submits the proposal. 2) HoD records a recommended outcome. 3) RSPC Admin records an eligible verification outcome. 4) Dean-RSPC forwards the proposal to the Director. 5) Director records an approved outcome.",
+    "expected_result": "State after each step: 1) Proposal Submitted; 2) Department Recommended; 3) Admin Verified; 4) Forwarded to Director (not Approved); 5) Approved.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-003",
+    "source_id": "CW-RSPC-01 row 3 (HoD not-recommended outcome)",
+    "purpose": "Verify the department-review decision outcome where the HoD does not recommend the research proposal.",
+    "preconditions": "Users exist holding the Faculty and HoD roles. A research proposal has been submitted by Faculty and is in Proposal Submitted.",
+    "action_or_input": "HoD records a not-recommended outcome on the proposal.",
+    "expected_result": "Proposal state becomes Department Not Recommended; it does not become Department Recommended, Admin Verified or Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-004",
+    "source_id": "CW-RSPC-01 row 5 (RSPC Admin not-eligible outcome)",
+    "purpose": "Verify the admin-verification decision outcome where the research proposal is not eligible for forwarding.",
+    "preconditions": "Users exist holding the Faculty, HoD and RSPC Admin roles. A research proposal has been submitted and recommended by the HoD (state Department Recommended).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding (incomplete/non-compliant).",
+    "expected_result": "Proposal state becomes Not Eligible for Forwarding; it does not become Admin Verified and is not available for Dean-RSPC decision.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-005",
+    "source_id": "CW-RSPC-01 row 8 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where the research proposal is not approved.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin and Dean-RSPC roles. A research proposal has been submitted, recommended and admin-verified (state Admin Verified).",
+    "action_or_input": "Dean-RSPC records a not-approved decision on the proposal.",
+    "expected_result": "Proposal state becomes Dean Not Approved; it does not become Approved or Forwarded to Director.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-006",
+    "source_id": "CW-RSPC-01 row 10 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded research proposal is not approved.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin, Dean-RSPC and Director roles. A research proposal has been submitted, recommended, admin-verified and forwarded to the Director by Dean-RSPC (state Forwarded to Director).",
+    "action_or_input": "Director records a not-approved decision on the proposal.",
+    "expected_result": "Proposal state becomes Director Not Approved; it does not become Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-007",
+    "source_id": "BW-RSPC-03 full path; CW-RSPC-02 rows 1, 2, 5, 7 (department-reviewed Dean-final approval path)",
+    "purpose": "Verify the consultancy success path with applicable department review ending in Dean-RSPC approval.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin and Dean-RSPC roles. Faculty has a consultancy registration in Consultancy Draft with client details, scope, deliverables, timeline and financial terms. Department stage is applicable; Director action is not required.",
+    "action_or_input": "1) Faculty submits the consultancy registration. 2) HoD records a positive recommendation. 3) RSPC Admin records an eligible verification outcome. 4) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Consultancy Submitted; 2) Department Recommended; 3) Admin Verified; 4) Approved. The registration never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-008",
+    "source_id": "BW-RSPC-04 full path; CW-RSPC-02 rows 1, 2, 5, 8, 10 (department-reviewed Director-routed approval path)",
+    "purpose": "Verify the consultancy success path with department review where Dean-RSPC forwards to the Director and the Director approves.",
+    "preconditions": "Users exist holding the Faculty, HoD, RSPC Admin, Dean-RSPC and Director roles. Faculty has a consultancy registration in Consultancy Draft with all required details. Department stage is applicable; the represented Director condition applies.",
+    "action_or_input": "1) Faculty submits the registration. 2) HoD records a positive recommendation. 3) RSPC Admin records an eligible verification outcome. 4) Dean-RSPC forwards to the Director. 5) Director records an approved outcome.",
+    "expected_result": "State after each step: 1) Consultancy Submitted; 2) Department Recommended; 3) Admin Verified; 4) Forwarded to Director; 5) Approved.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-009",
+    "source_id": "CW-RSPC-02 row 3 (HoD not-recommended outcome)",
+    "purpose": "Verify the consultancy department-review outcome where the HoD does not recommend.",
+    "preconditions": "Users exist holding the Faculty and HoD roles. A consultancy registration with applicable department stage has been submitted (state Consultancy Submitted).",
+    "action_or_input": "HoD records a not-recommended outcome.",
+    "expected_result": "Registration state becomes Department Not Recommended; it does not become Department Recommended, Admin Verified or Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-010",
+    "source_id": "CW-RSPC-02 rows 1, 4, 7 (department stage not applicable path)",
+    "purpose": "Verify the consultancy path that skips department review when the department stage is not applicable, going directly from submission to admin verification and Dean-RSPC approval.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. Faculty has a consultancy registration in Consultancy Draft for which the department stage is not applicable; Director action not required.",
+    "action_or_input": "1) Faculty submits the registration. 2) RSPC Admin records an eligible verification outcome directly on the submitted registration (no HoD action). 3) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Consultancy Submitted; 2) Admin Verified (without passing through Department Recommended); 3) Approved.",
+    "test_type": "workflow path - positive (alternative routing)"
+  },
+  {
+    "test_id": "WF-011",
+    "source_id": "CW-RSPC-02 row 6 from Consultancy Submitted (department stage not applicable; admin not-eligible outcome)",
+    "purpose": "Verify the admin-verification not-eligible outcome on a consultancy registration that has no department stage.",
+    "preconditions": "Users exist holding the Faculty and RSPC Admin roles. A consultancy registration with department stage not applicable has been submitted (state Consultancy Submitted).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding.",
+    "expected_result": "Registration state becomes Not Eligible for Forwarding; it does not become Admin Verified.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-012",
+    "source_id": "CW-RSPC-02 row 6 from Department Recommended (admin not-eligible outcome)",
+    "purpose": "Verify the admin-verification not-eligible outcome on a department-recommended consultancy registration.",
+    "preconditions": "Users exist holding the Faculty, HoD and RSPC Admin roles. A consultancy registration has been submitted and recommended by the HoD (state Department Recommended).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding.",
+    "expected_result": "Registration state becomes Not Eligible for Forwarding; it does not become Admin Verified.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-013",
+    "source_id": "CW-RSPC-02 row 9 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where the consultancy registration is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles (and HoD if the department stage applies). A consultancy registration is in Admin Verified.",
+    "action_or_input": "Dean-RSPC records a not-approved decision.",
+    "expected_result": "Registration state becomes Dean Not Approved; it does not become Approved or Forwarded to Director.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-014",
+    "source_id": "CW-RSPC-02 row 11 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded consultancy registration is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A consultancy registration has been forwarded to the Director by Dean-RSPC (state Forwarded to Director).",
+    "action_or_input": "Director records a not-approved decision.",
+    "expected_result": "Registration state becomes Director Not Approved; it does not become Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-015",
+    "source_id": "BW-RSPC-05 full path; CW-RSPC-03 rows 1, 2, 4, 5 (Dean-final appointment approval path)",
+    "purpose": "Verify the project-staff appointment success path ending in Dean-RSPC approval.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. Faculty has a project-based staff appointment request in Appointment Draft for an existing project. Faculty selection participation is required; Director action is not required.",
+    "action_or_input": "1) Faculty submits the appointment request. 2) RSPC Admin records an eligible verification and prepares the operational records. 3) Faculty records the selection participation/recommendation. 4) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Appointment Requested; 2) Admin Verified; 3) Selection Recommendation Recorded; 4) Approved. The request never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-016",
+    "source_id": "BW-RSPC-06 full path; CW-RSPC-03 rows 1, 2, 4, 6, 8 (Director-routed appointment approval path)",
+    "purpose": "Verify the project-staff appointment success path where Dean-RSPC forwards to the Director and the Director approves.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. Faculty has a staff appointment request in Appointment Draft. Faculty selection participation is required; the represented appointment path requires Director action.",
+    "action_or_input": "1) Faculty submits the request. 2) RSPC Admin records an eligible verification and prepares operational records. 3) Faculty records the selection recommendation. 4) Dean-RSPC forwards to the Director. 5) Director records an approved outcome.",
+    "expected_result": "State after each step: 1) Appointment Requested; 2) Admin Verified; 3) Selection Recommendation Recorded; 4) Forwarded to Director; 5) Approved.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-017",
+    "source_id": "CW-RSPC-03 row 3 (RSPC Admin not-eligible outcome)",
+    "purpose": "Verify the admin-verification outcome where a staff appointment request is not eligible for forwarding.",
+    "preconditions": "Users exist holding the Faculty and RSPC Admin roles. A staff appointment request has been submitted (state Appointment Requested).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding.",
+    "expected_result": "Request state becomes Not Eligible for Forwarding; it does not become Admin Verified.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-018",
+    "source_id": "CW-RSPC-03 row 7 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where a staff appointment request is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. A staff appointment request is in Selection Recommendation Recorded.",
+    "action_or_input": "Dean-RSPC records a not-approved decision.",
+    "expected_result": "Request state becomes Dean Not Approved; it does not become Approved or Forwarded to Director.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-019",
+    "source_id": "CW-RSPC-03 row 9 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded staff appointment request is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A staff appointment request is in Forwarded to Director.",
+    "action_or_input": "Director records a not-approved decision.",
+    "expected_result": "Request state becomes Director Not Approved; it does not become Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-020",
+    "source_id": "BW-RSPC-07 full path; CW-RSPC-04 rows 1, 2, 4 (approval within delegated Dean-RSPC powers)",
+    "purpose": "Verify the financial/fund request success path approved within delegated Dean-RSPC financial powers.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. Faculty has a fund-utilization or expenditure request in Financial Request Draft for an existing project; the amount is within delegated Dean-RSPC financial powers (no high-value/Director condition).",
+    "action_or_input": "1) Faculty submits the request. 2) RSPC Admin records an eligible initial verification. 3) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Submitted; 2) Verified; 3) Approved. The request never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-021",
+    "source_id": "BW-RSPC-08 full path; CW-RSPC-04 rows 1, 2, 5, 7 (high-value Director-routed approval path)",
+    "purpose": "Verify the financial/fund request path where the high-value/Director condition applies and the Director approves/authorizes.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. Faculty has a fund-utilization or expenditure request in Financial Request Draft whose amount meets the represented high-value/Director condition.",
+    "action_or_input": "1) Faculty submits the request. 2) RSPC Admin records an eligible initial verification. 3) Dean-RSPC forwards the request to the Director. 4) Director records the required approval/authorization.",
+    "expected_result": "State after each step: 1) Submitted; 2) Verified; 3) Forwarded to Director (not Approved by Dean-RSPC alone); 4) Approved.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-022",
+    "source_id": "CW-RSPC-04 row 3 (RSPC Admin not-eligible outcome)",
+    "purpose": "Verify the initial-verification outcome where a financial request is not eligible for forwarding.",
+    "preconditions": "Users exist holding the Faculty and RSPC Admin roles. A financial request has been submitted (state Submitted).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding.",
+    "expected_result": "Request state becomes Not Eligible for Forwarding; it does not become Verified.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-023",
+    "source_id": "CW-RSPC-04 row 6 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where a verified financial request is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. A financial request is in Verified.",
+    "action_or_input": "Dean-RSPC records a not-approved decision.",
+    "expected_result": "Request state becomes Dean Not Approved; it does not become Approved or Forwarded to Director.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-024",
+    "source_id": "CW-RSPC-04 row 8 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded financial request is not approved/authorized.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A financial request is in Forwarded to Director.",
+    "action_or_input": "Director records a not-approved/not-authorized decision.",
+    "expected_result": "Request state becomes Director Not Approved; it does not become Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-025",
+    "source_id": "BW-RSPC-09 full path; CW-RSPC-05 rows 1, 2, 4 (Dean-final procurement approval path)",
+    "purpose": "Verify the procurement request success path approved by Dean-RSPC without Director action.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. A project exists with a sanctioned budget represented in RSPC. Faculty has an equipment/consumables procurement request in Procurement Request Draft whose amount is within the sanctioned budget and within Dean-RSPC authority.",
+    "action_or_input": "1) Faculty submits the procurement request. 2) RSPC Admin records completeness/compliance and sanctioned-budget validation as passing. 3) Dean-RSPC records an approval.",
+    "expected_result": "State after each step: 1) Submitted; 2) Verified; 3) Approved. The request never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-026",
+    "source_id": "BW-RSPC-10 full path; CW-RSPC-05 rows 1, 2, 5, 7 (Director-routed procurement approval path)",
+    "purpose": "Verify the procurement request path where the represented hierarchy requires Director action and the Director approves.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A project exists with a sanctioned budget. Faculty has a procurement request in Procurement Request Draft within the sanctioned budget for which the represented hierarchy requires Director action.",
+    "action_or_input": "1) Faculty submits the request. 2) RSPC Admin records validation as passing. 3) Dean-RSPC forwards to the Director. 4) Director records an approved/authorized outcome.",
+    "expected_result": "State after each step: 1) Submitted; 2) Verified; 3) Forwarded to Director; 4) Approved.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-027",
+    "source_id": "CW-RSPC-05 row 3 (verification or sanctioned-budget validation fails)",
+    "purpose": "Verify the procurement verification outcome where verification/sanctioned-budget validation fails and the request is not eligible for forwarding.",
+    "preconditions": "Users exist holding the Faculty and RSPC Admin roles. A project exists with a sanctioned budget. A procurement request whose amount exceeds the project's sanctioned budget has been submitted (state Submitted).",
+    "action_or_input": "RSPC Admin performs verification of the request (sanctioned-budget validation fails).",
+    "expected_result": "Request state becomes Not Eligible for Forwarding; it does not become Verified and is not available for Dean-RSPC decision.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-028",
+    "source_id": "CW-RSPC-05 row 6 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where a verified procurement request is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. A procurement request is in Verified.",
+    "action_or_input": "Dean-RSPC records a not-approved decision.",
+    "expected_result": "Request state becomes Dean Not Approved; it does not become Approved or Forwarded to Director.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-029",
+    "source_id": "CW-RSPC-05 row 8 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded procurement request is not approved/authorized.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A procurement request is in Forwarded to Director.",
+    "action_or_input": "Director records a not-approved/not-authorized decision.",
+    "expected_result": "Request state becomes Director Not Approved; it does not become Approved.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-030",
+    "source_id": "BW-RSPC-11 full path; CW-RSPC-06 rows 1, 2, 4 (closure approved and archived at Dean-RSPC)",
+    "purpose": "Verify the project-closure success path approved by Dean-RSPC ending in archival with the project completed.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. An existing project has closure/completion information in Closure Draft, with settlement/asset/compliance records represented; Director action is not required.",
+    "action_or_input": "1) Faculty submits the closure/completion record. 2) RSPC Admin records closure completeness and settlement/asset/compliance records as verified eligible. 3) Dean-RSPC approves the closure.",
+    "expected_result": "State after each step: 1) Closure Submitted; 2) Closure Verified; 3) Archived, and the project is marked completed. The closure never enters Forwarded to Director.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-031",
+    "source_id": "BW-RSPC-12 full path; CW-RSPC-06 rows 1, 2, 5, 7 (closure approved and archived via Director)",
+    "purpose": "Verify the project-closure path where Director action is required and the Director approves, ending in archival.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. An existing project has closure/completion information in Closure Draft; the represented path requires Director action.",
+    "action_or_input": "1) Faculty submits the closure record. 2) RSPC Admin verifies it as eligible. 3) Dean-RSPC forwards to the Director. 4) Director approves the closure.",
+    "expected_result": "State after each step: 1) Closure Submitted; 2) Closure Verified; 3) Forwarded to Director (not yet Archived); 4) Archived, and the project is marked completed.",
+    "test_type": "workflow path - positive (basis)"
+  },
+  {
+    "test_id": "WF-032",
+    "source_id": "CW-RSPC-06 row 3 (RSPC Admin not-eligible outcome)",
+    "purpose": "Verify the closure verification outcome where the closure record is not eligible for forwarding.",
+    "preconditions": "Users exist holding the Faculty and RSPC Admin roles. A closure record has been submitted (state Closure Submitted).",
+    "action_or_input": "RSPC Admin records a verification outcome that is not eligible for forwarding.",
+    "expected_result": "Closure state becomes Not Eligible for Forwarding; it does not become Closure Verified and the project is not archived.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-033",
+    "source_id": "CW-RSPC-06 row 6 (Dean-RSPC not-approved outcome)",
+    "purpose": "Verify the Dean-RSPC decision outcome where project closure is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin and Dean-RSPC roles. A closure record is in Closure Verified.",
+    "action_or_input": "Dean-RSPC records a not-approved decision on the closure.",
+    "expected_result": "Closure state becomes Dean Not Approved; it does not become Archived or Forwarded to Director, and the project is not marked completed.",
+    "test_type": "workflow decision outcome - negative"
+  },
+  {
+    "test_id": "WF-034",
+    "source_id": "CW-RSPC-06 row 8 (Director not-approved outcome)",
+    "purpose": "Verify the Director decision outcome where a forwarded project closure is not approved.",
+    "preconditions": "Users exist holding the Faculty, RSPC Admin, Dean-RSPC and Director roles. A closure record is in Forwarded to Director.",
+    "action_or_input": "Director records a not-approved decision on the closure.",
+    "expected_result": "Closure state becomes Director Not Approved; it does not become Archived, and the project is not marked completed.",
+    "test_type": "workflow decision outcome - negative"
+  }
+]
