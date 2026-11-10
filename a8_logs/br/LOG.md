@@ -68,3 +68,6 @@
   `a8_design/BR_DESIGN.json` (21:00:24 UTC) shows it was 21:00, and the entry was corrected to 21:00.
 - `git diff --stat a8-base -- modules config client registry openapi core fusion_auth` → empty (no production change).
 - Wrote `a8_logs/br/SUMMARY.md`. End time: 2026-11-10 21:10:50 UTC.
+- 21:12 Session exported via the desktop app's session export (zip in Downloads) and converted to
+  `a8_logs/br/SESSION.md` (user/assistant messages, tool calls and results; thinking blocks not included). It covers
+  the session up to the end of Step G; the export request itself is not in it.
