@@ -1,0 +1,49 @@
+...ss..............sssssssssssssssssssss....F.....ssssss.ss....s..       [100%]
+=================================== FAILURES ===================================
+__________________ test_BR_040_submission_and_decision_logged __________________
+
+rspc = <tests.a8.br.test_br.Rspc object at 0x7c1bc03cb410>
+
+    def test_BR_040_submission_and_decision_logged(rspc):
+        """BR-040 | source_id: BR-RSPC-050.
+    
+        The proposal's decision history (returned with the proposal) is the RSPC audit/history
+        record available through the interface."""
+        before = timezone.now()
+        pid = rspc.submit()
+        assert rspc.recommend(pid, remarks="ok").status_code == 200
+    
+        log = rspc.mine()[pid]["decisions"]
+    
+        submission = [e for e in log if e["actor_id"] == FACULTY_A]
+        decision = [e for e in log if e["actor_id"] == HOD]
+>       assert submission, f"no submission entry in audit log: {log}"
+E       AssertionError: no submission entry in audit log: [{'id': 25, 'proposal': 15, 'stage': 'HoD', 'actor_id': 2001, 'outcome': 'recommended', 'remarks': 'ok', 'decided_at': '2026-11-11T02:38:58.547305+05:30'}]
+E       assert []
+
+tests/a8/br/test_br.py:551: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                                                                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------------------------------------------
+modules/rspc/__init__.py                                                         0      0      0      0   100%
+modules/rspc/api/__init__.py                                                     0      0      0      0   100%
+modules/rspc/api/serializers.py                                                 26      0      4      0   100%
+modules/rspc/api/urls.py                                                         3      0      0      0   100%
+modules/rspc/api/views.py                                                      131     20     36     10    80%   50, 67, 72, 104, 109, 141, 168-180, 204, 220-236
+modules/rspc/apps.py                                                             4      0      0      0   100%
+modules/rspc/migrations/0001_initial.py                                          6      0      0      0   100%
+modules/rspc/migrations/0002_alter_researchproposal_department_and_more.py       4      0      0      0   100%
+modules/rspc/migrations/__init__.py                                              0      0      0      0   100%
+modules/rspc/models.py                                                          31      2      0      0    94%   37, 56
+modules/rspc/registry.py                                                         4      0      0      0   100%
+modules/rspc/tests/__init__.py                                                   0      0      0      0   100%
+modules/rspc/tests/test_proposal_flow.py                                        52     52      0      0     0%   1-85
+modules/rspc/tests/test_proposal_validation.py                                  19     19      0      0     0%   1-24
+------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                          280     93     40     10    67%
+Coverage XML written to file a8_results/br/coverage.xml
+=========================== short test summary info ============================
+FAILED tests/a8/br/test_br.py::test_BR_040_submission_and_decision_logged - A...
+1 failed, 33 passed, 32 skipped in 7.36s

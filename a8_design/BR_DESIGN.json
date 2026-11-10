@@ -1,0 +1,551 @@
+[
+  {
+    "test_id": "BR-001",
+    "source_id": "BR-RSPC-004 condition-true (Director action required)",
+    "purpose": "Verify that Dean-RSPC forwards a request whose represented approval path requires Director action to the Director stage instead of finalizing it.",
+    "preconditions": "An eligible research project proposal has passed HoD and RSPC Admin stages and is pending at the Dean-RSPC stage; the represented approval path for this proposal requires Director action. Dean-RSPC user is authenticated.",
+    "action_or_input": "Dean-RSPC records a favourable decision / forwards the proposal.",
+    "expected_result": "The proposal moves to the Director stage and is pending Director action; it is not recorded as finally approved at Dean-RSPC.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-002",
+    "source_id": "BR-RSPC-005 permitted (Director records approval of large funding request)",
+    "purpose": "Verify that the Director can record the required final approval for a large funding request at the Director stage.",
+    "preconditions": "A large funding request meeting the represented Director-approval condition is pending at the Director stage. Director user is authenticated.",
+    "action_or_input": "Director records approval of the request.",
+    "expected_result": "The approval is accepted and recorded as the Director's final approval; the request is shown as approved.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-003",
+    "source_id": "BR-RSPC-005 prohibited (non-Director records Director-stage approval)",
+    "purpose": "Verify that a user without the Director role cannot record the required Director approval for a large funding request.",
+    "preconditions": "A large funding request meeting the represented Director-approval condition is pending at the Director stage. A Dean-RSPC user (not Director) is authenticated.",
+    "action_or_input": "Dean-RSPC user attempts to record the final approval at the Director stage.",
+    "expected_result": "The action is rejected as unauthorized; the request remains pending at the Director stage and is not marked approved.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-004",
+    "source_id": "BR-RSPC-006 permitted (Director authorizes high-value expenditure)",
+    "purpose": "Verify that the Director can record the required authorization for a high-value expenditure request at the Director stage.",
+    "preconditions": "A high-value expenditure request meeting the represented Director-authorization condition is pending at the Director stage. Director user is authenticated.",
+    "action_or_input": "Director records authorization of the expenditure request.",
+    "expected_result": "The authorization is accepted and recorded; the expenditure request is shown as authorized/approved.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-005",
+    "source_id": "BR-RSPC-006 prohibited (non-Director authorizes high-value expenditure)",
+    "purpose": "Verify that a user without the Director role cannot record the required Director authorization for a high-value expenditure.",
+    "preconditions": "A high-value expenditure request meeting the represented Director-authorization condition is pending at the Director stage. An RSPC Admin or Dean-RSPC user (not Director) is authenticated.",
+    "action_or_input": "The non-Director user attempts to record authorization at the Director stage.",
+    "expected_result": "The action is rejected as unauthorized; the expenditure request remains pending at the Director stage and is not authorized.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-006",
+    "source_id": "BR-RSPC-012 route with Director applicable; BR-RSPC-069 condition-true",
+    "purpose": "Verify that a research proposal requiring the Director stage advances in order Faculty -> HoD -> RSPC Admin -> Dean-RSPC -> Director.",
+    "preconditions": "Faculty, HoD, RSPC Admin, Dean-RSPC and Director users exist with their RSPC roles; the proposal meets the represented Director-routing condition.",
+    "action_or_input": "Faculty submits a complete proposal; HoD recommends/forwards; RSPC Admin verifies as eligible and forwards; Dean-RSPC forwards; Director approves.",
+    "expected_result": "After each action the proposal is at the next stated stage (HoD, then RSPC Admin, then Dean-RSPC, then Director); after the Director decision the proposal is approved. No stage is skipped.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-007",
+    "source_id": "BR-RSPC-012 stated exception (Director stage not applicable); BR-RSPC-069 condition-false; BR-RSPC-068 permitted",
+    "purpose": "Verify that a research proposal for which the Director stage is not applicable is finalized at Dean-RSPC without entering the Director stage.",
+    "preconditions": "A proposal that does not meet the represented Director-routing condition has passed HoD and RSPC Admin (eligible) and is pending at Dean-RSPC; it is within Dean-RSPC's represented authority.",
+    "action_or_input": "Dean-RSPC approves the proposal.",
+    "expected_result": "The proposal is recorded as approved at Dean-RSPC and never enters the Director stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-008",
+    "source_id": "BR-RSPC-012 out-of-order stage action prohibited",
+    "purpose": "Verify that a later-stage approver cannot act on a proposal that has not yet reached that stage.",
+    "preconditions": "A Faculty proposal has just been submitted and is pending at the HoD stage. Dean-RSPC user is authenticated.",
+    "action_or_input": "Dean-RSPC attempts to approve/forward the proposal while it is still at the HoD stage.",
+    "expected_result": "The action is rejected; the proposal remains at the HoD stage and its status is unchanged.",
+    "test_type": "routing-negative"
+  },
+  {
+    "test_id": "BR-009",
+    "source_id": "BR-RSPC-013 condition-true (all mandatory fields complete)",
+    "purpose": "Verify that a proposal with all mandatory fields is accepted as submitted and advances.",
+    "preconditions": "Faculty user is authenticated.",
+    "action_or_input": "Faculty submits a proposal with objectives, timelines, budget, funding source and resource requirements all provided.",
+    "expected_result": "Submission succeeds; the proposal is recorded as submitted and advances to the HoD review stage.",
+    "test_type": "validation-positive"
+  },
+  {
+    "test_id": "BR-010",
+    "source_id": "BR-RSPC-013 condition-false (a mandatory field missing)",
+    "purpose": "Verify that a proposal is not advanced as submitted when any of the mandatory fields named in the PS is incomplete.",
+    "preconditions": "Faculty user is authenticated.",
+    "action_or_input": "For each mandatory field in turn (objectives, timelines, budget, funding source, resource requirements), Faculty submits an otherwise complete proposal with that field missing/blank.",
+    "expected_result": "Each submission is rejected with a validation error identifying the incomplete field; no proposal is recorded as submitted or advanced to HoD.",
+    "test_type": "validation-negative"
+  },
+  {
+    "test_id": "BR-011",
+    "source_id": "BR-RSPC-014 represented validation fails; BR-RSPC-070 represented policy applied",
+    "purpose": "Verify that a represented/configured proposal policy validation prevents advancement of a proposal that violates it.",
+    "preconditions": "A proposal policy validation is explicitly represented/configured in RSPC (e.g. a configured limit on a proposal attribute). Faculty user is authenticated.",
+    "action_or_input": "Faculty submits an otherwise complete proposal that violates the represented policy validation.",
+    "expected_result": "The proposal is not advanced; a validation error referencing the policy is returned.",
+    "test_type": "validation-negative"
+  },
+  {
+    "test_id": "BR-012",
+    "source_id": "BR-RSPC-014 represented validation passes",
+    "purpose": "Verify that a proposal satisfying the represented policy validation advances normally.",
+    "preconditions": "The same represented/configured proposal policy validation as BR-011 exists. Faculty user is authenticated.",
+    "action_or_input": "Faculty submits a complete proposal that satisfies the represented policy validation.",
+    "expected_result": "The proposal is accepted as submitted and advances to the HoD stage.",
+    "test_type": "validation-positive"
+  },
+  {
+    "test_id": "BR-013",
+    "source_id": "BR-RSPC-015",
+    "purpose": "Verify that every recorded research-proposal review/approval decision carries a timestamp.",
+    "preconditions": "A submitted proposal; HoD, RSPC Admin, Dean-RSPC users exist.",
+    "action_or_input": "HoD, RSPC Admin and Dean-RSPC each record their decision on the proposal; then retrieve the proposal's decision/approval history.",
+    "expected_result": "Each decision record in the history includes a non-empty timestamp corresponding to when the decision was recorded.",
+    "test_type": "record"
+  },
+  {
+    "test_id": "BR-014",
+    "source_id": "BR-RSPC-016",
+    "purpose": "Verify that every recorded research-proposal review/approval decision retains the remarks entered with it.",
+    "preconditions": "A submitted proposal; HoD, RSPC Admin, Dean-RSPC users exist.",
+    "action_or_input": "HoD, RSPC Admin and Dean-RSPC each record their decision with distinct remarks text; then retrieve the decision/approval history.",
+    "expected_result": "Each decision record includes exactly the remarks entered by that reviewer.",
+    "test_type": "record"
+  },
+  {
+    "test_id": "BR-015",
+    "source_id": "BR-RSPC-022 HoD and Director stages applicable",
+    "purpose": "Verify that a consultancy record whose represented path includes HoD and Director passes through those stages.",
+    "preconditions": "The represented institutional path for the consultancy makes the HoD and Director stages applicable. Faculty and approver users exist.",
+    "action_or_input": "Faculty submits the consultancy record; each applicable approver acts in turn.",
+    "expected_result": "The consultancy passes through the HoD stage and the Director stage as part of its approval; it is approved only after the Director stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-016",
+    "source_id": "BR-RSPC-022 stated exception (HoD and Director stages not applicable)",
+    "purpose": "Verify that a consultancy record is routed only through represented applicable stages, skipping HoD and Director when they are not applicable.",
+    "preconditions": "The represented institutional path for the consultancy does not make the HoD or Director stages applicable.",
+    "action_or_input": "Faculty submits the consultancy record; the applicable approvers act.",
+    "expected_result": "The consultancy never enters the HoD or Director stage and is finalized at the last applicable stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-017",
+    "source_id": "BR-RSPC-026 Director not applicable",
+    "purpose": "Verify that an eligible staff-appointment request is routed to Dean-RSPC and finalized there when Director is not applicable.",
+    "preconditions": "An eligible project staff-appointment request has reached the approval phase; the represented appointment path does not make Director applicable.",
+    "action_or_input": "The request reaches the approval phase; Dean-RSPC approves.",
+    "expected_result": "The request is routed to Dean-RSPC and recorded as approved there without entering the Director stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-018",
+    "source_id": "BR-RSPC-026 Director applicable",
+    "purpose": "Verify that an eligible staff-appointment request is routed through Dean-RSPC and then Director when Director is applicable.",
+    "preconditions": "An eligible project staff-appointment request has reached the approval phase; the represented appointment path makes Director applicable.",
+    "action_or_input": "Dean-RSPC acts on the request, then Director approves.",
+    "expected_result": "The request is routed to Dean-RSPC, then to Director, and is approved only after the Director decision.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-019",
+    "source_id": "BR-RSPC-032 within delegated powers; BR-RSPC-033 condition-false",
+    "purpose": "Verify that a verified financial request within Dean-RSPC's represented delegated powers can be approved at Dean-RSPC and is not escalated.",
+    "preconditions": "Delegated financial powers for Dean-RSPC are represented/configured; a verified fund-utilization/expenditure request with amount within the delegated limit is at Dean-RSPC.",
+    "action_or_input": "Dean-RSPC approves the request.",
+    "expected_result": "The request is recorded as approved at Dean-RSPC and is not routed to Director.",
+    "test_type": "threshold-within"
+  },
+  {
+    "test_id": "BR-020",
+    "source_id": "BR-RSPC-032 beyond delegated powers; BR-RSPC-033 condition-true",
+    "purpose": "Verify that a verified financial request beyond Dean-RSPC's delegated powers is not approved at Dean-RSPC and is escalated to Director.",
+    "preconditions": "Delegated financial powers for Dean-RSPC are represented/configured; a verified request with amount exceeding the delegated limit (meeting the Director-escalation condition) is at Dean-RSPC.",
+    "action_or_input": "Dean-RSPC attempts to approve the request / the request is processed at Dean-RSPC.",
+    "expected_result": "Dean-RSPC approval is not recorded as final; the request is routed to the Director stage.",
+    "test_type": "threshold-exceeded"
+  },
+  {
+    "test_id": "BR-021",
+    "source_id": "BR-RSPC-034",
+    "purpose": "Verify that financial request, verification, approval, escalation and transaction-record events are logged for audit.",
+    "preconditions": "Faculty, RSPC Admin, Dean-RSPC and Director users exist; delegated limits represented such that the request escalates.",
+    "action_or_input": "Faculty submits a financial request; RSPC Admin verifies it; it is escalated to Director; Director approves; a transaction record is recorded. Then retrieve the audit/reporting record.",
+    "expected_result": "The audit record contains one entry for each lifecycle event (request, verification, escalation, approval, transaction record) with actor and time.",
+    "test_type": "audit"
+  },
+  {
+    "test_id": "BR-022",
+    "source_id": "BR-RSPC-035 within sanctioned budget",
+    "purpose": "Verify that a procurement request within the sanctioned project budget is advanced as eligible.",
+    "preconditions": "A project with a sanctioned budget represented in RSPC; Faculty is the project owner.",
+    "action_or_input": "Faculty submits a procurement request whose cost is within the remaining sanctioned budget.",
+    "expected_result": "The request passes budget validation and is advanced as eligible to approval.",
+    "test_type": "validation-positive"
+  },
+  {
+    "test_id": "BR-023",
+    "source_id": "BR-RSPC-035 exceeds sanctioned budget",
+    "purpose": "Verify that a procurement request exceeding the sanctioned project budget is not advanced as eligible.",
+    "preconditions": "A project with a sanctioned budget represented in RSPC; Faculty is the project owner.",
+    "action_or_input": "Faculty submits a procurement request whose cost exceeds the remaining sanctioned budget.",
+    "expected_result": "The request fails budget validation and is not advanced as eligible; a validation message is returned.",
+    "test_type": "validation-negative"
+  },
+  {
+    "test_id": "BR-024",
+    "source_id": "BR-RSPC-036 permitted (represented hierarchy followed)",
+    "purpose": "Verify that an eligible procurement request is routed through the represented approval stages in order.",
+    "preconditions": "An eligible procurement request; a represented procurement approval hierarchy; approver users exist.",
+    "action_or_input": "Each applicable approver in the represented hierarchy acts in order.",
+    "expected_result": "The request moves through exactly the represented stages in order and is approved after the final applicable stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-025",
+    "source_id": "BR-RSPC-036 prohibited (hierarchy bypass)",
+    "purpose": "Verify that a procurement request cannot be approved by an approver outside its current applicable stage.",
+    "preconditions": "An eligible procurement request pending at the first applicable approval stage.",
+    "action_or_input": "An approver of a later stage (e.g. Director) attempts to approve the request before earlier stages are complete.",
+    "expected_result": "The action is rejected; the request remains at its current stage.",
+    "test_type": "routing-negative"
+  },
+  {
+    "test_id": "BR-026",
+    "source_id": "BR-RSPC-037 schedule due date reached",
+    "purpose": "Verify that a report becomes due/pending and a reminder is raised according to the represented reporting schedule.",
+    "preconditions": "A project with a represented reporting schedule whose next report due date has been reached; no report submitted for that period.",
+    "action_or_input": "Evaluate the project's report status / run the reminder processing.",
+    "expected_result": "The report for the period is shown as due/pending and a reminder notification is generated for the responsible Faculty.",
+    "test_type": "timing"
+  },
+  {
+    "test_id": "BR-027",
+    "source_id": "BR-RSPC-037 schedule due date not reached",
+    "purpose": "Verify that no due/pending status or reminder is generated before the represented schedule's due date.",
+    "preconditions": "A project with a represented reporting schedule whose next due date is in the future.",
+    "action_or_input": "Evaluate the project's report status / run the reminder processing.",
+    "expected_result": "No report is shown as pending/overdue for that period and no reminder is generated.",
+    "test_type": "timing"
+  },
+  {
+    "test_id": "BR-028",
+    "source_id": "BR-RSPC-038 authorized actor",
+    "purpose": "Verify that an authorized actor can access historical progress reports throughout the project lifecycle.",
+    "preconditions": "A project owned by Faculty A with several submitted progress reports, including after the project has advanced to a later lifecycle state (e.g. closed).",
+    "action_or_input": "Faculty A requests the project's historical progress reports.",
+    "expected_result": "All historical progress reports of the project are returned.",
+    "test_type": "access-positive"
+  },
+  {
+    "test_id": "BR-029",
+    "source_id": "BR-RSPC-038 unauthorized actor",
+    "purpose": "Verify that an actor outside the authorized role/project scope cannot access historical progress reports.",
+    "preconditions": "A project owned by Faculty A with submitted progress reports; Faculty B has no role on the project.",
+    "action_or_input": "Faculty B requests the project's historical progress reports.",
+    "expected_result": "Access is denied (or no reports of that project are returned).",
+    "test_type": "access-negative"
+  },
+  {
+    "test_id": "BR-030",
+    "source_id": "BR-RSPC-039 authorized actor",
+    "purpose": "Verify that an authorized actor can access historical utilization reports throughout the project lifecycle.",
+    "preconditions": "A project owned by Faculty A with several submitted utilization reports, including after the project has advanced to a later lifecycle state.",
+    "action_or_input": "Faculty A requests the project's historical utilization reports.",
+    "expected_result": "All historical utilization reports of the project are returned.",
+    "test_type": "access-positive"
+  },
+  {
+    "test_id": "BR-031",
+    "source_id": "BR-RSPC-039 unauthorized actor",
+    "purpose": "Verify that an actor outside the authorized role/project scope cannot access historical utilization reports.",
+    "preconditions": "A project owned by Faculty A with submitted utilization reports; Faculty B has no role on the project.",
+    "action_or_input": "Faculty B requests the project's historical utilization reports.",
+    "expected_result": "Access is denied (or no reports of that project are returned).",
+    "test_type": "access-negative"
+  },
+  {
+    "test_id": "BR-032",
+    "source_id": "BR-RSPC-043 closure approved",
+    "purpose": "Verify that a completed project whose closure is approved is archived as closed with its audit trail retained.",
+    "preconditions": "A completed project with a prior audit trail and a submitted closure record pending final closure approval.",
+    "action_or_input": "The applicable approver records closure approval.",
+    "expected_result": "The project is shown as archived/closed and its complete RSPC audit trail remains retrievable.",
+    "test_type": "lifecycle"
+  },
+  {
+    "test_id": "BR-033",
+    "source_id": "BR-RSPC-043 closure not approved",
+    "purpose": "Verify that a project is not archived when closure approval has not been recorded.",
+    "preconditions": "A completed project with a submitted closure record still pending approval (or rejected).",
+    "action_or_input": "Retrieve the project's status without closure approval being recorded.",
+    "expected_result": "The project is not archived/closed.",
+    "test_type": "lifecycle-negative"
+  },
+  {
+    "test_id": "BR-034",
+    "source_id": "BR-RSPC-045 configured integration",
+    "purpose": "Verify that information supplied through an explicitly configured integration is processed as RSPC integration data.",
+    "preconditions": "An integration source is explicitly represented/configured for RSPC.",
+    "action_or_input": "The configured integration supplies RSPC-relevant information.",
+    "expected_result": "The information is accepted and recorded in RSPC.",
+    "test_type": "integration-positive"
+  },
+  {
+    "test_id": "BR-035",
+    "source_id": "BR-RSPC-045 unconfigured integration",
+    "purpose": "Verify that information from an integration not configured for RSPC is not processed.",
+    "preconditions": "An integration source that is not represented/configured for RSPC.",
+    "action_or_input": "The unconfigured source supplies RSPC-relevant information.",
+    "expected_result": "The information is rejected/ignored and no RSPC record is created or changed.",
+    "test_type": "integration-negative"
+  },
+  {
+    "test_id": "BR-036",
+    "source_id": "BR-RSPC-048 authorized scope",
+    "purpose": "Verify that a user can view RSPC project data within their authorized role and record scope.",
+    "preconditions": "Faculty A owns proposal P-A.",
+    "action_or_input": "Faculty A requests the list of proposals and the details of P-A.",
+    "expected_result": "P-A is included in the list and its details are returned.",
+    "test_type": "access-positive"
+  },
+  {
+    "test_id": "BR-037",
+    "source_id": "BR-RSPC-048 outside authorized scope",
+    "purpose": "Verify that a user cannot view RSPC data outside their authorized role and record scope.",
+    "preconditions": "Faculty A owns proposal P-A; Faculty B has only the Faculty role and no relation to P-A.",
+    "action_or_input": "Faculty B requests the list of proposals and the details of P-A.",
+    "expected_result": "P-A is not included in Faculty B's list and the detail request is denied (or reports not found).",
+    "test_type": "access-negative"
+  },
+  {
+    "test_id": "BR-038",
+    "source_id": "BR-RSPC-049 permitted action",
+    "purpose": "Verify that a user can perform an RSPC action allowed by their assigned role.",
+    "preconditions": "A proposal pending at the HoD stage; user with the HoD role for the department.",
+    "action_or_input": "HoD records a recommendation on the proposal.",
+    "expected_result": "The action is accepted and the decision is recorded.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-039",
+    "source_id": "BR-RSPC-049 unauthorized action blocked",
+    "purpose": "Verify that a user cannot perform an RSPC action not allowed by their assigned role.",
+    "preconditions": "A proposal pending at the HoD stage; a user holding only the Faculty role.",
+    "action_or_input": "The Faculty user attempts to record the HoD decision on the proposal.",
+    "expected_result": "The action is blocked as unauthorized; the proposal and its decision history are unchanged.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-040",
+    "source_id": "BR-RSPC-050",
+    "purpose": "Verify that auditable RSPC events/record changes are retained in the RSPC audit log.",
+    "preconditions": "Faculty and reviewer users exist.",
+    "action_or_input": "Faculty submits a proposal and a reviewer records a decision; retrieve the RSPC audit/history log for the proposal.",
+    "expected_result": "The log contains entries for the submission and the decision, each identifying the actor, action and time.",
+    "test_type": "audit"
+  },
+  {
+    "test_id": "BR-041",
+    "source_id": "BR-RSPC-053 authorized mechanism",
+    "purpose": "Verify that a role assignment supplied through the authorized Fusion role-management mechanism is applied to RSPC access.",
+    "preconditions": "A user without any RSPC role.",
+    "action_or_input": "Assign the HoD RSPC role to the user through the authorized Fusion role-management mechanism; the user then attempts an HoD action.",
+    "expected_result": "The assignment is applied; the user is permitted to perform the HoD action.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-042",
+    "source_id": "BR-RSPC-053 unauthorized source",
+    "purpose": "Verify that role-assignment information not supplied through the authorized mechanism is not applied.",
+    "preconditions": "A user holding only the Faculty role.",
+    "action_or_input": "Supply role-assignment information outside the authorized mechanism (e.g. the user attempts to assign themselves the Dean-RSPC role through an RSPC request), then attempt a Dean-RSPC action.",
+    "expected_result": "The assignment is not applied; the Dean-RSPC action is blocked.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-043",
+    "source_id": "BR-RSPC-054 authorized mechanism",
+    "purpose": "Verify that a role reassignment supplied through the authorized mechanism is applied to RSPC access.",
+    "preconditions": "User U holds the HoD RSPC role; user V holds no HoD role.",
+    "action_or_input": "Reassign the HoD role from U to V through the authorized Fusion role-management mechanism; V attempts an HoD action.",
+    "expected_result": "The reassignment is applied; V is permitted to perform the HoD action.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-044",
+    "source_id": "BR-RSPC-054 unauthorized source",
+    "purpose": "Verify that role-reassignment information not supplied through the authorized mechanism is not applied.",
+    "preconditions": "User U holds the HoD RSPC role; user V holds only the Faculty role.",
+    "action_or_input": "Supply reassignment information outside the authorized mechanism (e.g. V or U attempts to transfer the HoD role through an RSPC request), then V attempts an HoD action.",
+    "expected_result": "The reassignment is not applied; V's HoD action is blocked and U retains HoD access.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-045",
+    "source_id": "BR-RSPC-055",
+    "purpose": "Verify that an authorized role change takes effect immediately for RSPC access (new access granted, old access withdrawn).",
+    "preconditions": "User U holds the HoD role and can perform HoD actions; a proposal is pending at the HoD stage.",
+    "action_or_input": "Through the authorized mechanism, remove U's HoD role and grant it to V; immediately (no re-login or delay) U and V each attempt the HoD action.",
+    "expected_result": "U's attempt is blocked and V's attempt is permitted, without any waiting period.",
+    "test_type": "authorization"
+  },
+  {
+    "test_id": "BR-046",
+    "source_id": "BR-RSPC-058",
+    "purpose": "Verify that RSPC processing of staff-appointment information is limited to records/status and does not execute HR or payroll actions.",
+    "preconditions": "An approved project staff appointment with stipend information.",
+    "action_or_input": "Record a stipend/payment-related status update for the appointment in RSPC.",
+    "expected_result": "RSPC stores the status/record only; no HR master-data change or payroll/payment execution is performed by RSPC.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-047",
+    "source_id": "BR-RSPC-059",
+    "purpose": "Verify that RSPC processing of financial/settlement information is limited to request, approval, status and transaction records without accounting or bank-payment execution.",
+    "preconditions": "An approved financial request.",
+    "action_or_input": "Record a transaction/settlement record for the request in RSPC.",
+    "expected_result": "RSPC stores the transaction/status record only; no ledger posting, bank payment or disbursement execution is performed by RSPC.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-048",
+    "source_id": "BR-RSPC-060",
+    "purpose": "Verify that RSPC processing of procurement or asset-declaration information is limited to request/validation/approval/status records.",
+    "preconditions": "An approved procurement request.",
+    "action_or_input": "Record a procurement status update / asset declaration in RSPC.",
+    "expected_result": "RSPC stores the status/asset record only; no purchase order, vendor or stock-master operation is executed by RSPC.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-049",
+    "source_id": "BR-RSPC-061 notification triggered",
+    "purpose": "Verify that an RSPC notification event is recorded/triggered through the represented Fusion channels.",
+    "preconditions": "Faculty and HoD users exist.",
+    "action_or_input": "Faculty submits a proposal (a notification-triggering RSPC event).",
+    "expected_result": "A notification event for the responsible reviewer is recorded/triggered through the Fusion dashboard (and email) channel.",
+    "test_type": "notification"
+  },
+  {
+    "test_id": "BR-050",
+    "source_id": "BR-RSPC-061 stated exception (external delivery failure)",
+    "purpose": "Verify that a failure of the external email-delivery infrastructure does not affect the RSPC action or expand RSPC behaviour.",
+    "preconditions": "The platform email-delivery service is unavailable / raises a delivery failure.",
+    "action_or_input": "Faculty submits a proposal (a notification-triggering RSPC event).",
+    "expected_result": "The RSPC submission still succeeds and the RSPC notification event is recorded; RSPC does not fail the action because of the external delivery failure.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-051",
+    "source_id": "BR-RSPC-062",
+    "purpose": "Verify that RSPC only stores/tracks represented external funding-agency information and does not execute the external agency process.",
+    "preconditions": "A project with a represented external funding-agency submission/disbursement tracking field.",
+    "action_or_input": "Record an external funding-agency submission or disbursement status in RSPC.",
+    "expected_result": "The status is stored as tracking information only; no external agency submission or disbursement is executed by RSPC.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-052",
+    "source_id": "BR-RSPC-063",
+    "purpose": "Verify that RSPC consumes Fusion authentication/role information and enforces it without administering platform identity.",
+    "preconditions": "RSPC endpoints are available.",
+    "action_or_input": "Send an unauthenticated request to an RSPC data endpoint.",
+    "expected_result": "The request is rejected as unauthenticated by the Fusion authentication mechanism; no RSPC data is returned.",
+    "test_type": "scope-boundary"
+  },
+  {
+    "test_id": "BR-053",
+    "source_id": "BR-RSPC-065 update permitted in current lifecycle state",
+    "purpose": "Verify that Faculty can update project details when the current lifecycle state permits the update.",
+    "preconditions": "Faculty A owns a proposal/project in a lifecycle state that permits editing (e.g. draft / returned for revision).",
+    "action_or_input": "Faculty A updates the project details.",
+    "expected_result": "The update is saved and the new values are returned.",
+    "test_type": "lifecycle"
+  },
+  {
+    "test_id": "BR-054",
+    "source_id": "BR-RSPC-065 update not permitted in current lifecycle state",
+    "purpose": "Verify that Faculty cannot update project details when the current lifecycle state does not permit the update.",
+    "preconditions": "Faculty A owns a proposal/project in a lifecycle state that does not permit editing (e.g. submitted and under review, or closed).",
+    "action_or_input": "Faculty A attempts to update the project details.",
+    "expected_result": "The update is rejected; stored values are unchanged.",
+    "test_type": "lifecycle-negative"
+  },
+  {
+    "test_id": "BR-055",
+    "source_id": "BR-RSPC-066 eligible verification outcome",
+    "purpose": "Verify that RSPC Admin forwards a request to the next approving authority when verification is eligible.",
+    "preconditions": "A proposal recommended by HoD and pending RSPC Admin verification.",
+    "action_or_input": "RSPC Admin records an eligible verification outcome and forwards.",
+    "expected_result": "The request advances to the Dean-RSPC stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-056",
+    "source_id": "BR-RSPC-066 ineligible verification outcome",
+    "purpose": "Verify that a request with an ineligible verification outcome does not advance as eligible.",
+    "preconditions": "A proposal recommended by HoD and pending RSPC Admin verification.",
+    "action_or_input": "RSPC Admin records an ineligible (incomplete/non-compliant) verification outcome.",
+    "expected_result": "The request does not advance to the Dean-RSPC stage; it is not shown as eligible.",
+    "test_type": "routing-negative"
+  },
+  {
+    "test_id": "BR-057",
+    "source_id": "BR-RSPC-067 recommended",
+    "purpose": "Verify that HoD forwards a request to the next stage when the departmental recommendation is recorded as recommended.",
+    "preconditions": "A submitted proposal pending at the HoD stage.",
+    "action_or_input": "HoD records the recommendation as recommended.",
+    "expected_result": "The recommendation is recorded and the request advances to the RSPC Admin stage.",
+    "test_type": "routing"
+  },
+  {
+    "test_id": "BR-058",
+    "source_id": "BR-RSPC-067 not recommended",
+    "purpose": "Verify that a non-recommended request is recorded without being forwarded as recommended.",
+    "preconditions": "A submitted proposal pending at the HoD stage.",
+    "action_or_input": "HoD records the recommendation as not recommended.",
+    "expected_result": "The non-recommendation is recorded in the decision history; the request does not advance to the RSPC Admin stage as recommended.",
+    "test_type": "routing-negative"
+  },
+  {
+    "test_id": "BR-059",
+    "source_id": "BR-RSPC-068 outside authority (forward/escalate); BR-RSPC-004 Dean does not finalize",
+    "purpose": "Verify that Dean-RSPC cannot record final approval of an eligible request outside its represented authority; the forwarding/escalation path applies.",
+    "preconditions": "An eligible request at Dean-RSPC whose represented path requires Director action (outside Dean-RSPC authority).",
+    "action_or_input": "Dean-RSPC attempts to record final approval of the request.",
+    "expected_result": "Final approval at Dean-RSPC is not recorded; the request is forwarded/escalated to the Director stage (or remains pending) and is not shown as approved.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-060",
+    "source_id": "BR-RSPC-068 ineligible request",
+    "purpose": "Verify that Dean-RSPC cannot approve a request that has not been routed to Dean-RSPC as eligible.",
+    "preconditions": "A request whose RSPC Admin verification outcome is ineligible (or not yet verified).",
+    "action_or_input": "Dean-RSPC attempts to approve the request.",
+    "expected_result": "The approval is rejected; the request is not marked approved.",
+    "test_type": "authorization-negative"
+  },
+  {
+    "test_id": "BR-061",
+    "source_id": "BR-RSPC-070 unrepresented external policy not invented",
+    "purpose": "Verify that an external policy/threshold that is not represented/configured in RSPC does not alter RSPC behaviour.",
+    "preconditions": "No proposal policy validation and no Director-escalation threshold is represented/configured in RSPC.",
+    "action_or_input": "Faculty submits a complete proposal with a large budget value and it is processed by the reviewers.",
+    "expected_result": "The proposal is processed on the stated route without any validation failure or Director escalation attributed to an unrepresented external policy value.",
+    "test_type": "scope-boundary"
+  }
+]
