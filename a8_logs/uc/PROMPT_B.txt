@@ -1,0 +1,19 @@
+You are given:
+1. the frozen A8_BASE Fusion implementation, and
+2. the frozen Use Case Specifications_DESIGN.json (a8_design/UC_DESIGN.json).
+
+Convert these test designs into executable automated backend tests using pytest/pytest-django.
+
+Rules:
+- Implement exactly the supplied test cases.
+- Do not add, remove, merge or reinterpret test cases.
+- Preserve each specified expected result.
+- Do not modify production code.
+- Use the Django isolated test database.
+- Reuse existing Fusion test infrastructure where appropriate.
+- Do not mock the behavior being tested; mocks may be used only for unavailable external dependencies.
+- Do not use xfail to hide failures.
+- Every test must contain its test_id and source_id in its name or docstring.
+- Store generated tests only under tests/a8/uc/.
+
+If a test genuinely cannot be automated using the available interfaces, create it as a skipped pytest test with: NOT_AUTOMATED: <reason>. Do not replace it with a different test.

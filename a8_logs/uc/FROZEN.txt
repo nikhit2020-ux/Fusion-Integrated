@@ -1,0 +1,5 @@
+a8_design/UC_DESIGN.json
+SHA-256: 4a3d74b984f983fb41acbc3d3d508c3f526f59ce308914b5fc63ba9c79555ff9
+Frozen: 2026-11-10 20:45 UTC
+Test cases: 116 (39 main-flow, 19 alternative-flow, 58 exception-flow)
+Obligations covered: 106/106

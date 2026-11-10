@@ -5,6 +5,7 @@ One row per underlying problem. "Exposed by" lists the strategies whose tests re
 | Defect ID | Summary | Classification | Spec evidence | Exposed by (test_ids) |
 |---|---|---|---|---|
 | D-01 | Proposal submission is not logged as a retrievable audit/log event; only review decisions (HoD/Admin/Dean/Director) are logged. | Confirmed Implementation Defect | RSPC-FR-088; RSPC-CFR-002 | FR (FR-009) |
+| D-02 | No draft save/revise for research proposals: create always records the proposal as `submitted` (status read-only, hard-coded in the view) and there is no update endpoint, so Faculty cannot save or revise a draft before submission. | Confirmed Implementation Defect | RSPC-UC-002 Alternative A1 | UC (UC-006) |
 
 ## Candidate failures not confirmed as defects
 
